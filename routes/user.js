@@ -11,13 +11,15 @@ const User = require('../models/User');
 
 router.post('/register', function(req, res) {
 
-    const { errors, isValid } = validateRegisterInput(req.body);
+    const { errors, isValid } = validateRegisterInput(req.body.user);
 
+console.log(req.body.user);
     if(!isValid) {
+        console.log(errors);
         return res.status(400).json(errors);
     }
     User.findOne({
-        email: req.body.email
+        email: req.body.user.email
     }).then(user => {
         if(user) {
             return res.status(400).json({
@@ -25,15 +27,15 @@ router.post('/register', function(req, res) {
             });
         }
         else {
-            const avatar = gravatar.url(req.body.email, {
+            const avatar = gravatar.url(req.body.user.email, {
                 s: '200',
                 r: 'pg',
                 d: 'mm'
             });
             const newUser = new User({
-                name: req.body.name,
-                email: req.body.email,
-                password: req.body.password,
+                name: req.body.user.name,
+                email: req.body.user.email,
+                password: req.body.user.password,
                 avatar
             });
             
@@ -60,7 +62,8 @@ router.post('/register', function(req, res) {
 router.post('/login', (req, res) => {
 
     const {errors, isValid} = validateLoginInput(req.body);
-
+console.log(errors);
+console.log(req.body);
     if (!isValid) {
         return res.status(400).json(errors);
     }
@@ -89,7 +92,7 @@ router.post('/login', (req, res) => {
                             else {
                                 res.json({
                                     success: true,
-                                    token: `Bearer ${token}`
+                                    jwt: `Bearer ${token}`
                                 });
                             }
                         });
