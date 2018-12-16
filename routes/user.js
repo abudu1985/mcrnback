@@ -62,8 +62,6 @@ console.log(req.body.user);
 router.post('/login', (req, res) => {
 
     const {errors, isValid} = validateLoginInput(req.body);
-console.log(errors);
-console.log(req.body);
     if (!isValid) {
         return res.status(400).json(errors);
     }
